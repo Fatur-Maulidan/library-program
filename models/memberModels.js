@@ -22,6 +22,12 @@ const updateMember = async (body, code) => {
     return connection.execute(query);
 }
 
+const deleteMember = async (code) => {
+    const query = ` DELETE FROM members 
+                    WHERE code = '${code}'`;
+
+    return connection.execute(query);
+}
 
 const countAllMembers = () => {
     const query = 'SELECT COUNT(*) as totalMember FROM members';
@@ -40,5 +46,6 @@ const setPrefixCodeMember = async () => {
 module.exports = {
     getAllMembers,
     createNewMember,
-    updateMember
+    updateMember,
+    deleteMember
 }

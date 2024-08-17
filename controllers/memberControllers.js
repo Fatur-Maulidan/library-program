@@ -13,7 +13,7 @@ const index = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message : 'Internal Server Error',
-            serverMessage : error.message
+            errorMessage : error.message
         });
     }
 }
@@ -28,7 +28,7 @@ const store = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message : 'Internal Server Error',
-            serverMessage : error.message
+            errorMessage : error.message
         });
     }
 }
@@ -43,14 +43,29 @@ const update = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message : 'Internal Server Error',
-            serverMessage : error.message
+            errorMessage : error.message
         });
     }
 }
 
+const destroy = async (req, res) => {
+    try {
+        await MemberModel.deleteMember(req.params.code);
+        res.json({
+            status : 200,
+            message : 'Success Delete Member'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message : 'Internal Server Error',
+            errorMessage : error.message
+        })
+    }
+}
 
 module.exports = {
     index,
     store,
-    update
+    update,
+    destroy
 };
