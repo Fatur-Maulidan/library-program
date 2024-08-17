@@ -18,6 +18,22 @@ const index = async (req, res) => {
     }
 }
 
+const store = async (req, res) => {
+    try {
+        await BooksModel.createNewBook(req.body);
+        res.json({
+            status: 200,
+            message: 'Success Create New Book'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal Server Error',
+            errorMessage: error.message
+        });
+    }
+}
+
 module.exports = {
     index,
+    store
 }
