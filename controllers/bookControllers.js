@@ -48,7 +48,24 @@ const update = async (req, res) => {
     }
 }
 
+const destroy = async (req, res) => {
+    try {
+        await BooksModel.deleteBook(req.params.code, req.params.status);
+        res.json({
+            status: 200,
+            message: `Success, Book now is ${req.params.status}`
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal Server Error',
+            errorMessage: error.message
+        });
+    }
+}
+
 module.exports = {
     index,
-    store
+    store,
+    update,
+    destroy
 }

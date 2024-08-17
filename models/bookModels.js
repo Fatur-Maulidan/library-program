@@ -20,8 +20,15 @@ const updateBook = (body, code) => {
     return connection.execute(query, [body.title, body.author, code]);
 }
 
+const deleteBook = (code) => {
+    const query = 'DELETE FROM books WHERE code = ?';
+
+    return connection.execute(query, [code]);
+}
 
 module.exports = {
     getAllBooks,
-    createNewBook
+    createNewBook,
+    updateBook,
+    deleteBook
 };

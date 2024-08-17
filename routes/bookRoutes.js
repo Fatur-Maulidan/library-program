@@ -5,6 +5,6 @@ var router = express.Router();
 router.get('/', BookController.index);
 router.post('/', BookController.store);
 router.put('/:code', bookController.update);
-// router.put('/book/:code/Inactive', bookController.destroy);
+router.delete('/:code', bookController.destroy);
 
 module.exports = router;
