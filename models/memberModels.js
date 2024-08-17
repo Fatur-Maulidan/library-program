@@ -9,9 +9,9 @@ const getAllMembers = () => {
 const createNewMember = async (body) => {
     let prefixCodeMember = await setPrefixCodeMember();
     const query = ` INSERT INTO members (code, name, status) 
-                    VALUES ('${prefixCodeMember}', '${body.name}', 'Active')`;
+                    VALUES (?,?,?)`;
 
-    return connection.execute(query);
+    return connection.execute(query, [prefixCodeMember, body.name], 'Active');
 }
 
 const updateMember = async (body, code) => {
