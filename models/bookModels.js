@@ -12,6 +12,15 @@ const createNewBook = (body) => {
     return connection.execute(query, [body.code, body.title, body.author, 1]);
 }
 
+const updateBook = (body, code) => {
+    const query =  `UPDATE books
+                    SET title = ?, author = ?
+                    WHERE code = ?`;
+    
+    return connection.execute(query, [body.title, body.author, code]);
+}
+
+
 module.exports = {
     getAllBooks,
     createNewBook

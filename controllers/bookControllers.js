@@ -33,6 +33,21 @@ const store = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    try {
+        await BooksModel.updateBook(req.body, req.params.code);
+        res.json({
+            status: 200,
+            message: 'Success Update Book'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message : 'internal Server Error',
+            errorMessage : error.message
+        })
+    }
+}
+
 module.exports = {
     index,
     store

@@ -4,7 +4,7 @@ var router = express.Router();
 
 router.get('/', BookController.index);
 router.post('/', BookController.store);
-// router.put('/book/:code', bookController.update);
+router.put('/:code', bookController.update);
 // router.put('/book/:code/Inactive', bookController.destroy);
 
 module.exports = router;
