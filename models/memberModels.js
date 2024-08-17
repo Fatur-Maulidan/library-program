@@ -16,18 +16,18 @@ const createNewMember = async (body) => {
 
 const updateMember = async (body, code) => {
     const query = ` UPDATE members 
-                    SET name = '${body.name}'
-                    WHERE code = '${code}'`;
+                    SET name = ?
+                    WHERE code = ?`;
 
-    return connection.execute(query);
+    return connection.execute(query, [body.name, code]);
 }
 
 const deleteMember = async (code, status) => {
     const query = ` UPDATE members
-                    SET status = '${status}' 
-                    WHERE code = '${code}'`;
+                    SET status = ?
+                    WHERE code = ?`;
 
-    return connection.execute(query);
+    return connection.execute(query, [status, code]);
 }
 
 const countAllMembers = () => {
