@@ -1,17 +1,16 @@
 require('dotenv').config();
 const connection = require('../config/connection');
+const BooksModel = require('../models/bookModels');
 
-const getBooks = (req, res, next) => {
-    // connection.query('SELECT * FROM books', (err, result) => {
-    //     if (err) {
-    //         console.log('Error fetching books : ',err);
-    //         res.sendStatus(500);
-    //         return;
-    //     }
-    //     res.json(result);
-    // });
+const index = async (req, res) => {
+    const [data] = await BooksModel.getAllBooks();
     res.json({
-        status:200,
-        message: 'Books route works'
+        status: 200,
+        message: 'Success Get All Books',
+        data: data
     })
+}
+
+module.exports = {
+    index,
 }

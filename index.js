@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors())
 app.use('/api/member', MemberRoutes);
-// app.use('/api/book', BookRoutes);
+app.use('/api/book', BookRoutes);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

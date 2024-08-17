@@ -1,12 +1,11 @@
 const connection = require('../config/connection');
 
-const getBooks = (req, res, next) => {
-    connection.query('SELECT * FROM books', (err, result) => {
-        if (err) {
-            console.log('Error fetching books : ',err);
-            res.sendStatus(500);
-            return;
-        }
-        res.json(result);
-    });
+const getAllBooks = () => {
+    const query = 'SELECT * FROM books';
+
+    return connection.execute(query);
 }
+
+module.exports = {
+    getAllBooks,
+};
