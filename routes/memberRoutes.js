@@ -4,5 +4,6 @@ var router = express.Router();
 
 router.get('/member', MemberController.index);
 router.post('/member', MemberController.store);
+router.put('/member/:code', MemberController.update);
 
 module.exports = router;

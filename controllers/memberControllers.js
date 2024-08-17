@@ -33,9 +33,24 @@ const store = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    try {
+        await MemberModel.updateMember(req.body, req.params.code);
+        res.json({
+            status : 200,
+            message : 'Success Update Member'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message : 'Internal Server Error',
+            serverMessage : error.message
+        });
+    }
+}
 
 
 module.exports = {
     index,
-    store
+    store,
+    update
 };
