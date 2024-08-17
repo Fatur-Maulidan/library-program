@@ -18,8 +18,24 @@ const index = async (req, res) => {
     }
 }
 
+const store = async (req, res) => {
+    try {
+        await MemberModel.createNewMember(req.body);
+        res.json({
+            status : 200,
+            message : 'Success Create New Member'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message : 'Internal Server Error',
+            serverMessage : error.message
+        });
+    }
+}
+
 
 
 module.exports = {
-    index
+    index,
+    store
 };
