@@ -53,7 +53,7 @@ const destroy = async (req, res) => {
         await MemberModel.deleteMember(req.params.code);
         res.json({
             status : 200,
-            message : 'Success Delete Member'
+            message : 'Success, Member now is Inactive'
         });
     } catch (error) {
         res.status(500).json({

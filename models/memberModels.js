@@ -8,8 +8,8 @@ const getAllMembers = () => {
 
 const createNewMember = async (body) => {
     let prefixCodeMember = await setPrefixCodeMember();
-    const query = ` INSERT INTO members (code, name) 
-                    VALUES ('${prefixCodeMember}', '${body.name}')`;
+    const query = ` INSERT INTO members (code, name, status) 
+                    VALUES ('${prefixCodeMember}', '${body.name}', 'Active')`;
 
     return connection.execute(query);
 }
@@ -23,7 +23,8 @@ const updateMember = async (body, code) => {
 }
 
 const deleteMember = async (code) => {
-    const query = ` DELETE FROM members 
+    const query = ` UPDATE members
+                    SET status = 'Inactive' 
                     WHERE code = '${code}'`;
 
     return connection.execute(query);
