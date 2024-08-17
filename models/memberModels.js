@@ -22,9 +22,9 @@ const updateMember = async (body, code) => {
     return connection.execute(query);
 }
 
-const deleteMember = async (code) => {
+const deleteMember = async (code, status) => {
     const query = ` UPDATE members
-                    SET status = 'Inactive' 
+                    SET status = '${status}' 
                     WHERE code = '${code}'`;
 
     return connection.execute(query);

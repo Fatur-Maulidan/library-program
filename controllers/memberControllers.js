@@ -50,10 +50,10 @@ const update = async (req, res) => {
 
 const destroy = async (req, res) => {
     try {
-        await MemberModel.deleteMember(req.params.code);
+        await MemberModel.deleteMember(req.params.code, req.params.status);
         res.json({
             status : 200,
-            message : 'Success, Member now is Inactive'
+            message : `Success, Member now is ${req.params.status}`
         });
     } catch (error) {
         res.status(500).json({
