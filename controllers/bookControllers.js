@@ -85,10 +85,11 @@ const borrowBook = async (req, res) => {
 
 const returnBook = async (req, res) => {
     try {
-        await BooksModel.returnBook(req.params.code);
+        const data = await BooksModel.returnBook(req.params.code);
         res.json({
             status: 200,
-            message: 'Success Return Book'
+            message: 'Success Return Book',
+            data : data
         });
     } catch (error) {
         res.status(500).json({

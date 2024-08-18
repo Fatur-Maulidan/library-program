@@ -43,9 +43,10 @@ const borrowBook = async (code, code_member) => {
 
 const returnBook = async (code) => {
     const logBorrow = await logBorrowedBook(code);
-    const query = `UPDATE books SET borrowed_at = NULL, code_members = NULL WHERE code = ?`;
+    return logBorrow;
+    // const query = `UPDATE books SET borrowed_at = NULL, code_members = NULL WHERE code = ?`;
 
-    return connection.execute(query, [code]);
+    // return connection.execute(query, [code]);
 }
 
 // This function is to check if book is available (anyone borrowed the book) or not 
@@ -86,10 +87,40 @@ const checkIfMemberIsBorrowed = async (code_member) => {
 // Insert into Log Borrowed Book for make history log who borrowed the book
 const logBorrowedBook = async (code) => {
     const [book] = await getBookByCode(code);
-    const query = 'INSERT INTO log_borrows (code_books, code_members, borrowed_at, return_at) VALUES (?, ?, ?, NOW())';
+    const penaltyUntil = await checkIfMemberGetPenalty(book[0].borrowed_at);
 
-    return connection.execute(query, [book[0].code, book[0].code_members, book[0].borrowed_at]);
+    const query = `INSERT INTO log_borrows (code_books, code_members, borrowed_at, return_at${penaltyUntil ? ', penalty_until' : ''}) 
+                VALUES (?, ?, ?, NOW()${penaltyUntil ? ', ?' : ''})`;
+
+    const params = [book[0].code, book[0].code_members, book[0].borrowed_at];
+    if (penaltyUntil) params.push(penaltyUntil);
+
+    return connection.execute(query, params);
 }
+
+const checkIfMemberGetPenalty = async (borrowed_at) => {
+    const borrowedDate = new Date(borrowed_at);
+    const now = new Date();
+    const NOW = () => Math.ceil((now - borrowedDate) / (1000 * 60 * 60 * 24));
+
+    if(NOW() > 7) {
+        return penaltyDate = setDateForPenalty(now);
+    }
+
+    return false;
+}
+
+const setDateForPenalty = (today) => {
+    const futureDate = new Date(today);
+    futureDate.setDate(today.getDate() + 3);
+    const mysqlTimestamp = futureDate.toISOString().slice(0, 19).replace('T', ' ');
+
+    return mysqlTimestamp;
+}
+
+// const futureDate = new Date(now);
+// futureDate.setDate(now.getDate() + 3);
+// const mysqlTimestamp = futureDate.toISOString().slice(0, 19).replace('T', ' ');
 
 module.exports = {
     getAllBooks,
