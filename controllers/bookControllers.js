@@ -83,10 +83,27 @@ const borrowBook = async (req, res) => {
     }
 }
 
+const returnBook = async (req, res) => {
+    try {
+        await BooksModel.returnBook(req.params.code);
+        res.json({
+            status: 200,
+            message: 'Success Return Book'
+        });
+    } catch (error) {
+        res.status(500).json({
+            status : 500,
+            message: 'Internal Server Error',
+            errorMessage: error.message
+        });
+    }
+}
+
 module.exports = {
     index,
     store,
     update,
     destroy,
-    borrowBook
+    borrowBook,
+    returnBook
 }

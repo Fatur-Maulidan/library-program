@@ -41,6 +41,13 @@ const borrowBook = async (code, code_member) => {
     return connection.execute(query, [code_member, code]);
 } 
 
+const returnBook = async (code) => {
+    const logBorrow = await logBorrowedBook(code);
+    const query = `UPDATE books SET borrowed_at = NULL, code_members = NULL WHERE code = ?`;
+
+    return connection.execute(query, [code]);
+}
+
 // This function is to check if book is available (anyone borrowed the book) or not 
 const checkIfBooksIsAvailable = async (code, code_member) => {
     const [dataBookByCode] = await getBookByCode(code);
@@ -76,10 +83,19 @@ const checkIfMemberIsBorrowed = async (code_member) => {
     return true
 }
 
+// Insert into Log Borrowed Book for make history log who borrowed the book
+const logBorrowedBook = async (code) => {
+    const [book] = await getBookByCode(code);
+    const query = 'INSERT INTO log_borrows (code_books, code_members, borrowed_at, return_at) VALUES (?, ?, ?, NOW())';
+
+    return connection.execute(query, [book[0].code, book[0].code_members, book[0].borrowed_at]);
+}
+
 module.exports = {
     getAllBooks,
     createNewBook,
     updateBook,
     deleteBook,
-    borrowBook
+    borrowBook,
+    returnBook
 };

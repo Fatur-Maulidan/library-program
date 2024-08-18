@@ -12,6 +12,7 @@ router.delete('/:code', BookController.destroy);
 
 // Task
 router.put('/borrow/:code_member', BookController.borrowBook);
+router.put('/return/:code', BookController.returnBook);
 
 
 module.exports = router;
