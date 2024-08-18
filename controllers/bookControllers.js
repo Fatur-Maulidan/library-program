@@ -12,6 +12,7 @@ const index = async (req, res) => {
         })
     } catch(error) {
         res.status(500).json({
+            status : 500,
             message: 'Internal Server Error',
             errorMessage: error.message
         });
@@ -27,6 +28,7 @@ const store = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
+            status : 500,
             message: 'Internal Server Error',
             errorMessage: error.message
         });
@@ -42,6 +44,7 @@ const update = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
+            status : 500,
             message : 'internal Server Error',
             errorMessage : error.message
         })
@@ -57,6 +60,7 @@ const destroy = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
+            status : 500,
             message: 'Internal Server Error',
             errorMessage: error.message
         });
@@ -72,6 +76,7 @@ const borrowBook = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
+            status : 500,
             message: 'Internal Server Error',
             errorMessage: error.message
         })

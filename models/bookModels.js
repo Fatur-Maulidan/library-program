@@ -34,12 +34,14 @@ const deleteBook = (code) => {
 }
 
 const borrowBook = async (code, code_member) => {
+    await checkIfMemberIsBorrowed(code_member);
     await checkIfBooksIsAvailable(code, code_member);
     const query = `UPDATE books SET borrowed_at = NOW(), code_members = ? WHERE code = ?`;
 
     return connection.execute(query, [code_member, code]);
 } 
 
+// This function is to check if book is available (anyone borrowed the book) or not 
 const checkIfBooksIsAvailable = async (code, code_member) => {
     const [dataBookByCode] = await getBookByCode(code);
     const [dataMemberByCode] = await getMemberByCode(code_member);
@@ -53,6 +55,25 @@ const checkIfBooksIsAvailable = async (code, code_member) => {
     }
 
     return true;
+}
+
+// This function is to count how many book is borrowed by member
+const countMemberIsBorrowed = async (code_member) => {
+    const query = 'SELECT COUNT(*) as member_borrowed FROM books WHERE code_members = ?';
+
+    return connection.execute(query, [code_member]);
+}
+
+// This function is to check if member is borrowed book or not
+const checkIfMemberIsBorrowed = async (code_member) => {
+    const [dataMemberIsBorrowed] = await countMemberIsBorrowed(code_member);
+    const [dataMemberByCode] = await getMemberByCode(code_member);
+
+    if(dataMemberIsBorrowed[0].member_borrowed > 0) {
+        throw new Error(`${dataMemberByCode[0].name} is borrowed book, need to return the book first`);
+    }
+
+    return true
 }
 
 module.exports = {
