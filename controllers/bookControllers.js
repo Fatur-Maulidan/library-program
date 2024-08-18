@@ -63,9 +63,25 @@ const destroy = async (req, res) => {
     }
 }
 
+const borrowBook = async (req, res) => {
+    try {
+        const borrowBook = await BooksModel.borrowBook(req.body.code, req.params.code_member);
+        res.json({
+            status: 200,
+            message: 'Success Borrow Book'
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal Server Error',
+            errorMessage: error.message
+        })
+    }
+}
+
 module.exports = {
     index,
     store,
     update,
-    destroy
+    destroy,
+    borrowBook
 }

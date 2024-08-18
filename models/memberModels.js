@@ -6,6 +6,12 @@ const getAllMembers = () => {
     return connection.execute(query);
 };
 
+const getMemberByCode = (code) => {
+    const query = 'SELECT * FROM members WHERE code = ?';
+
+    return connection.execute(query, [code]);
+}
+
 const createNewMember = async (body) => {
     let prefixCodeMember = await setPrefixCodeMember();
     const query = ` INSERT INTO members (code, name, status) 
@@ -46,6 +52,7 @@ const setPrefixCodeMember = async () => {
 
 module.exports = {
     getAllMembers,
+    getMemberByCode,
     createNewMember,
     updateMember,
     deleteMember
