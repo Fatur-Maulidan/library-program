@@ -27,7 +27,8 @@ const updateBook = (body, code) => {
     return connection.execute(query, [body.title, body.author, code]);
 }
 
-const deleteBook = (code) => {
+const deleteBook = async (code) => {
+    await checkIfAnyoneBorrowedBook(code);
     const query = 'DELETE FROM books WHERE code = ?';
 
     return connection.execute(query, [code]);
@@ -139,11 +140,23 @@ const memberStillInPenalty = async (code_member) => {
     return connection.execute(query, [code_member]);
 }
 
+// This function is used to check if a member is still in penalty
 const checkIfMemberStillInPenalty = async (code_member) => {
     const [dataMemberStillInPenalty] = await memberStillInPenalty(code_member);
 
     if(dataMemberStillInPenalty[0].penaltyMember.length > 0) {
         throw new Error('Member still in penalty cannot borrowing book');
+    }
+
+    return true;
+}
+
+// This function is used to check before deleting data book if anyone borrowed the book
+const checkIfAnyoneBorrowedBook = async (code) => {
+    const [dataBookByCode] = await getBookByCode(code);
+
+    if(dataBookByCode[0].borrowed_at !== null) {
+        throw new Error('Book is borrowed by someone, cannot delete book');
     }
 
     return true;

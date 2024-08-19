@@ -56,7 +56,7 @@ const destroy = async (req, res) => {
         await BooksModel.deleteBook(req.params.code, req.params.status);
         res.json({
             status: 200,
-            message: `Success, Book now is ${req.params.status}`
+            message: `Success Book is deleted`
         });
     } catch (error) {
         res.status(500).json({

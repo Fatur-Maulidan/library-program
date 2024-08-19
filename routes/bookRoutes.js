@@ -1,13 +1,16 @@
 var express = require('express');
 const BookController = require('../controllers/bookControllers');
 var router = express.Router();
-const {validationBookData} = require('../validations/bookValidation');
+const {
+    validationInsertBookData, 
+    validationUpdateBookData
+} = require('../validations/bookValidation');
 const {checkIfDataIsCorrect} = require('../helpers/checkStatusValidation');
 
 // CRUD For Books
 router.get('/', BookController.index);
-router.post('/', validationBookData, checkIfDataIsCorrect, BookController.store);
-router.put('/:code', validationBookData, checkIfDataIsCorrect, BookController.update);
+router.post('/', validationInsertBookData, checkIfDataIsCorrect, BookController.store);
+router.put('/:code', validationUpdateBookData, checkIfDataIsCorrect, BookController.update);
 router.delete('/:code', BookController.destroy);
 
 // Task
