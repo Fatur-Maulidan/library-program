@@ -89,7 +89,6 @@ const returnBook = async (req, res) => {
         res.json({
             status: 200,
             message: 'Success Return Book',
-            data : data
         });
     } catch (error) {
         res.status(500).json({

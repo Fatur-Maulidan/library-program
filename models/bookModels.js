@@ -36,17 +36,18 @@ const deleteBook = (code) => {
 const borrowBook = async (code, code_member) => {
     await checkIfMemberIsBorrowed(code_member);
     await checkIfBooksIsAvailable(code, code_member);
+    await checkIfMemberStillInPenalty(code_member);
     const query = `UPDATE books SET borrowed_at = NOW(), code_members = ? WHERE code = ?`;
 
     return connection.execute(query, [code_member, code]);
 } 
 
 const returnBook = async (code) => {
-    const logBorrow = await logBorrowedBook(code);
-    return logBorrow;
-    // const query = `UPDATE books SET borrowed_at = NULL, code_members = NULL WHERE code = ?`;
+    await checkIfMemberIsNotBorrowed(code);
+    await logBorrowedBook(code);
+    const query = `UPDATE books SET borrowed_at = NULL, code_members = NULL WHERE code = ?`;
 
-    // return connection.execute(query, [code]);
+    return connection.execute(query, [code]);
 }
 
 // This function is to check if book is available (anyone borrowed the book) or not 
@@ -84,6 +85,17 @@ const checkIfMemberIsBorrowed = async (code_member) => {
     return true
 }
 
+// This function is to check if member is not borrowed any book
+const checkIfMemberIsNotBorrowed = async (code_member) => {
+    const [dataMemberIsBorrowed] = await countMemberIsBorrowed(code_member);
+
+    if(dataMemberIsBorrowed[0].member_borrowed === 0) {
+        throw new Error('Member is not borrowed any book');
+    }
+
+    return true;
+}
+
 // Insert into Log Borrowed Book for make history log who borrowed the book
 const logBorrowedBook = async (code) => {
     const [book] = await getBookByCode(code);
@@ -98,6 +110,7 @@ const logBorrowedBook = async (code) => {
     return connection.execute(query, params);
 }
 
+// This function is used to check if a member has borrowed a book for more than 7 days.
 const checkIfMemberGetPenalty = async (borrowed_at) => {
     const borrowedDate = new Date(borrowed_at);
     const now = new Date();
@@ -110,6 +123,7 @@ const checkIfMemberGetPenalty = async (borrowed_at) => {
     return false;
 }
 
+// This function is used to set the date today + 3 days for the penalty
 const setDateForPenalty = (today) => {
     const futureDate = new Date(today);
     futureDate.setDate(today.getDate() + 3);
@@ -118,9 +132,22 @@ const setDateForPenalty = (today) => {
     return mysqlTimestamp;
 }
 
-// const futureDate = new Date(now);
-// futureDate.setDate(now.getDate() + 3);
-// const mysqlTimestamp = futureDate.toISOString().slice(0, 19).replace('T', ' ');
+// This function is used to check if a member is still in penalty
+const memberStillInPenalty = async (code_member) => {
+    const query = 'SELECT COUNT(*) as penaltyMember FROM log_borrows WHERE code_members = ? AND penalty_until > NOW()';
+
+    return connection.execute(query, [code_member]);
+}
+
+const checkIfMemberStillInPenalty = async (code_member) => {
+    const [dataMemberStillInPenalty] = await memberStillInPenalty(code_member);
+
+    if(dataMemberStillInPenalty[0].penaltyMember.length > 0) {
+        throw new Error('Member still in penalty cannot borrowing book');
+    }
+
+    return true;
+}
 
 module.exports = {
     getAllBooks,
